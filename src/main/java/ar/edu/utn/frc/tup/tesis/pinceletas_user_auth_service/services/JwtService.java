@@ -9,8 +9,8 @@ import java.util.Date;
 
 @Service
 public class JwtService {
-    private final String SECRET = "supersecretkeysupersecretkeysupersecretkey"; // mínimo 32 chars
-    private final long EXPIRATION = 1000 * 60 * 60; // 1 hora
+    private final String SECRET = "supersecretkeysupersecretkeysupersecretkey";
+    private final long EXPIRATION = 1000 * 60 * 60;
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
@@ -26,16 +26,28 @@ public class JwtService {
     }
 
     public String extractUsername(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (JwtException e) {
+            throw new RuntimeException("Token inválido", e);
+        }
     }
 
-    public boolean isTokenValid(String token, String email) {
-        return extractUsername(token).equals(email) && !isTokenExpired(token);
+    public boolean isTokenValid(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token);
+            return !isTokenExpired(token);
+        } catch (JwtException e) {
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token) {
