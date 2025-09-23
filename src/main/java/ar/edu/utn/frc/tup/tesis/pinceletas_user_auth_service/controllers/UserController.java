@@ -24,6 +24,21 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(email, request));
     }
 
+    @PutMapping("/profile/{email}/address")
+    public ResponseEntity<UserResponse> updateUserAddress(
+            @PathVariable String email,
+            @Valid @RequestBody UpdateAddressRequest request) {
+        return ResponseEntity.ok(userService.updateUserAddress(email, request));
+    }
+
+    @PutMapping("/profile/{email}/password")
+    public ResponseEntity<String> changePassword(
+            @PathVariable String email,
+            @Valid @RequestBody ChangePasswordRequest request) {
+        userService.changePassword(email, request);
+        return ResponseEntity.ok("Contraseña cambiada exitosamente");
+    }
+
     @DeleteMapping("/profile/{email}")
     public ResponseEntity<String> deleteUser(@PathVariable String email) {
         userService.deleteUser(email);

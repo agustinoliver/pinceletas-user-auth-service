@@ -16,4 +16,12 @@ public class UserResponse {
     private String telefono;
     private RoleEnum role;
     private boolean activo;
+    private String calle;
+    private String numero;
+    private String ciudad;
+    private String piso;
+    private String barrio;
+    private String pais;
+    private String provincia;
+    private String codigoPostal;
 }

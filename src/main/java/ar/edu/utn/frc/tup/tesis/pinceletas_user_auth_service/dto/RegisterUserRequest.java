@@ -6,23 +6,23 @@ import lombok.Data;
 
 @Data
 public class RegisterUserRequest {
-    @NotBlank
+    @NotBlank(message = "El nombre es requerido")
     private String nombre;
 
-    @NotBlank
+    @NotBlank(message = "El apellido es requerido")
     private String apellido;
 
-    @Email
-    @NotBlank
+    @Email(message = "Debe ser un email válido")
+    @NotBlank(message = "El email es requerido")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "El teléfono es requerido")
     private String telefono;
 
-    @NotBlank
-    @Size(min = 6)
+    @NotBlank(message = "La contraseña es requerida")
+    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "La confirmación de contraseña es requerida")
     private String confirmPassword;
 }
