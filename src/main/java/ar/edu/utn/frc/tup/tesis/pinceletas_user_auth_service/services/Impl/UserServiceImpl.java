@@ -1,9 +1,7 @@
 package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services.Impl;
 
 
-import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.RegisterUserRequest;
-import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.UpdateUserRequest;
-import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.UserResponse;
+import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.*;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.enums.RoleEnum;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.model.UserEntity;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.repository.UserRepository;
@@ -21,7 +19,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserEntity register(RegisterUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email ya registrado");
+            throw new RuntimeException("El email ya está registrado");
         }
         if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new RuntimeException("Las contraseñas no coinciden");
@@ -69,6 +67,38 @@ public class UserServiceImpl implements UserService{
         UserEntity updatedUser = userRepository.save(user);
         return mapToUserResponse(updatedUser);
     }
+    @Override
+    public UserResponse updateUserAddress(String email, UpdateAddressRequest request) {
+        UserEntity user = findByEmail(email);
+
+        user.setCalle(request.getCalle());
+        user.setNumero(request.getNumero());
+        user.setCiudad(request.getCiudad());
+        user.setPiso(request.getPiso());
+        user.setBarrio(request.getBarrio());
+        user.setPais(request.getPais());
+        user.setProvincia(request.getProvincia());
+        user.setCodigoPostal(request.getCodigoPostal());
+
+        UserEntity updatedUser = userRepository.save(user);
+        return mapToUserResponse(updatedUser);
+    }
+    @Override
+    public void changePassword(String email, ChangePasswordRequest request) {
+        UserEntity user = findByEmail(email);
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new RuntimeException("La contraseña actual es incorrecta");
+        }
+        if (!request.getNewPassword().equals(request.getConfirmNewPassword())) {
+            throw new RuntimeException("Las nuevas contraseñas no coinciden");
+        }
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            throw new RuntimeException("La nueva contraseña debe ser diferente a la actual");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
 
     @Override
     public void deleteUser(String email) {
@@ -83,14 +113,24 @@ public class UserServiceImpl implements UserService{
         userRepository.save(user);
     }
     private UserResponse mapToUserResponse(UserEntity user) {
-        return new UserResponse(
-                user.getId(),
-                user.getNombre(),
-                user.getApellido(),
-                user.getEmail(),
-                user.getTelefono(),
-                user.getRole(),
-                user.isActivo()
-        );
+        UserResponse response = new UserResponse();
+        response.setId(user.getId());
+        response.setNombre(user.getNombre());
+        response.setApellido(user.getApellido());
+        response.setEmail(user.getEmail());
+        response.setTelefono(user.getTelefono());
+        response.setRole(user.getRole());
+        response.setActivo(user.isActivo());
+
+        response.setCalle(user.getCalle());
+        response.setNumero(user.getNumero());
+        response.setCiudad(user.getCiudad());
+        response.setPiso(user.getPiso());
+        response.setBarrio(user.getBarrio());
+        response.setPais(user.getPais());
+        response.setProvincia(user.getProvincia());
+        response.setCodigoPostal(user.getCodigoPostal());
+
+        return response;
     }
 }

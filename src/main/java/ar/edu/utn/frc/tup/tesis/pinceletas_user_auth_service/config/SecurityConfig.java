@@ -17,7 +17,6 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Permite acceso público a TODOS los recursos
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
