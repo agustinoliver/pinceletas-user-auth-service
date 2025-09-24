@@ -32,16 +32,6 @@ public class LocationController {
         return ResponseEntity.ok(locationService.getStatesByCountry(countryCode));
     }
 
-    @GetMapping("/countries/{countryCode}/states/{stateCode}/cities")
-    @Operation(summary = "Obtener ciudades", description = "Lista ciudades de una provincia específica")
-    public ResponseEntity<List<CityDto>> getCitiesByState(
-            @Parameter(description = "Código del país")
-            @PathVariable String countryCode,
-            @Parameter(description = "Código de la provincia/estado")
-            @PathVariable String stateCode) {
-        return ResponseEntity.ok(locationService.getCitiesByState(countryCode, stateCode));
-    }
-
     @GetMapping("/countries/search")
     @Operation(summary = "Buscar países", description = "Busca países por nombre (para autocompletado)")
     public ResponseEntity<List<CountryDto>> searchCountries(

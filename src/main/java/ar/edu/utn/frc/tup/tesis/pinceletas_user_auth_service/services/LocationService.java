@@ -15,11 +15,6 @@ public interface LocationService {
     List<StateDto> getStatesByCountry(String countryCode);
 
     /**
-     * Obtiene las ciudades de un estado/provincia
-     */
-    List<CityDto> getCitiesByState(String countryCode, String stateCode);
-
-    /**
      * Busca países por nombre
      */
     List<CountryDto> searchCountries(String query);
