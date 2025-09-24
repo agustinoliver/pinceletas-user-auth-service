@@ -17,14 +17,30 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // Endpoints de autenticación
                         .requestMatchers("/api/auth/register", "/api/auth/login",
                                 "/api/auth/forgot-password", "/api/auth/reset-password").permitAll()
+
+                        // Documentación Swagger
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**",
                                 "/webjars/**", "/api-docs/**", "/swagger-ui.html").permitAll()
+
+                        // Health check
                         .requestMatchers("/health").permitAll()
+
+                        // H2 Console
                         .requestMatchers("/h2-console/**").permitAll()
+
+                        // APIs públicas
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
+
+                        // APIs de ubicaciones (públicas para facilitar el uso)
+                        .requestMatchers("/api/locations/**").permitAll()
+
+                        // APIs administrativas (deberían requerir autenticación en producción)
+                        .requestMatchers("/api/admin/locations/**").permitAll() // TODO: Cambiar a authenticated() en producción
+
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers
