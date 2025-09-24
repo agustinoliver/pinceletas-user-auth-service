@@ -6,7 +6,11 @@ import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.location.extern
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services.LocationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -95,49 +99,6 @@ public class LocationServiceImpl implements LocationService{
         log.warn("No se pudieron obtener estados para el país: {}", countryCode);
         return Collections.emptyList();
     }
-
-    @Override
-    @Cacheable(value = "cities", key = "#countryCode + '_' + #stateCode", unless = "#result.isEmpty()")
-    public List<CityDto> getCitiesByState(String countryCode, String stateCode) {
-        log.info("Obteniendo ciudades para estado: {} del país: {}", stateCode, countryCode);
-
-        try {
-            ResponseEntity<CountryStatesApiResponse> response = restTemplate.getForEntity(
-                    countriesStatesApiUrl + "/states",
-                    CountryStatesApiResponse.class
-            );
-
-            if (response.getBody() != null && response.getBody().getData() != null) {
-                Optional<CountryStatesApiResponse.CountryData> countryData = response.getBody().getData().stream()
-                        .filter(country -> countryCode.equalsIgnoreCase(country.getIso2()) ||
-                                countryCode.equalsIgnoreCase(country.getIso3()))
-                        .findFirst();
-
-                if (countryData.isPresent()) {
-                    Optional<CountryStatesApiResponse.StateData> stateData = countryData.get().getStates().stream()
-                            .filter(state -> stateCode.equalsIgnoreCase(state.getState_code()) ||
-                                    stateCode.equalsIgnoreCase(state.getName()))
-                            .findFirst();
-
-                    if (stateData.isPresent() && stateData.get().getCities() != null) {
-                        List<CityDto> cities = stateData.get().getCities().stream()
-                                .map(city -> mapToCityDto(city, stateData.get(), countryData.get()))
-                                .sorted(Comparator.comparing(CityDto::getName))
-                                .collect(Collectors.toList());
-
-                        log.info("Obtenidas {} ciudades para {}, {}", cities.size(), stateCode, countryCode);
-                        return cities;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error("Error al obtener ciudades para {}, {}: {}", stateCode, countryCode, e.getMessage());
-        }
-
-        log.warn("No se pudieron obtener ciudades para {}, {}", stateCode, countryCode);
-        return Collections.emptyList();
-    }
-
     @Override
     public List<CountryDto> searchCountries(String query) {
         log.info("Buscando países con query: {}", query);
@@ -180,34 +141,6 @@ public class LocationServiceImpl implements LocationService{
                 .name(state.getName())
                 .countryCode(countryCode)
                 .type(state.getType() != null ? state.getType() : "state")
-                .build();
-    }
-
-    private CityDto mapToCityDto(CountryStatesApiResponse.CityData city,
-                                 CountryStatesApiResponse.StateData state,
-                                 CountryStatesApiResponse.CountryData country) {
-        Double latitude = null;
-        Double longitude = null;
-
-        try {
-            if (city.getLatitude() != null && !city.getLatitude().isEmpty()) {
-                latitude = Double.parseDouble(city.getLatitude());
-            }
-            if (city.getLongitude() != null && !city.getLongitude().isEmpty()) {
-                longitude = Double.parseDouble(city.getLongitude());
-            }
-        } catch (NumberFormatException e) {
-            log.debug("No se pudieron parsear las coordenadas para {}", city.getName());
-        }
-
-        return CityDto.builder()
-                .name(city.getName())
-                .stateCode(state.getState_code())
-                .stateName(state.getName())
-                .countryCode(country.getIso2())
-                .countryName(country.getName())
-                .latitude(latitude)
-                .longitude(longitude)
                 .build();
     }
 }

@@ -33,8 +33,7 @@ public class LocationConfig {
         cacheManager.setCacheNames(java.util.Arrays.asList(
                 "countries",
                 "country",
-                "states",
-                "cities"
+                "states"
         ));
         return cacheManager;
     }

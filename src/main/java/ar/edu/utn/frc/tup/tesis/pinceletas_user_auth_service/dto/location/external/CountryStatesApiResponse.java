@@ -33,14 +33,5 @@ public class CountryStatesApiResponse {
         private String latitude;
         private String longitude;
         private String type;
-        private List<CityData> cities;
-    }
-
-    @Data
-    public static class CityData {
-        private Long id;
-        private String name;
-        private String latitude;
-        private String longitude;
     }
 }
