@@ -26,7 +26,7 @@ public class UserEntity {
     @Column(nullable = false)
     private String telefono;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -42,4 +42,10 @@ public class UserEntity {
     private String pais;
     private String provincia;
     private String codigoPostal;
+
+    @Column(unique = true, nullable = true)
+    private String firebaseUid; // UID de Firebase (opcional)
+    private String provider; // "password", "google.com", "facebook.com", etc.
+    private String displayName; // Nombre completo de Firebase
+    private java.time.Instant createdAt; // Fecha de creación
 }

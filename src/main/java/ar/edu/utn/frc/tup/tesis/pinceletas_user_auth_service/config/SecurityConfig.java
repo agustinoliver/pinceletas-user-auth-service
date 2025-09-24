@@ -20,6 +20,8 @@ public class SecurityConfig {
                         // Endpoints de autenticación
                         .requestMatchers("/api/auth/register", "/api/auth/login",
                                 "/api/auth/forgot-password", "/api/auth/reset-password").permitAll()
+                        // NUEVOS endpoints Firebase
+                        .requestMatchers("/api/auth/firebase/login", "/api/auth/firebase/register").permitAll()
 
                         // Documentación Swagger
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**",

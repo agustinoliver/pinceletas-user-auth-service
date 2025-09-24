@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
@@ -132,5 +134,84 @@ public class UserServiceImpl implements UserService{
         response.setCodigoPostal(user.getCodigoPostal());
 
         return response;
+    }
+    @Override
+    public UserEntity upsertFirebaseUser(String uid, String email, String displayName, String provider) {
+        // Buscar por Firebase UID primero
+        Optional<UserEntity> existingByUid = userRepository.findByFirebaseUid(uid);
+        if (existingByUid.isPresent()) {
+            UserEntity user = existingByUid.get();
+            user.setDisplayName(displayName);
+            user.setProvider(provider);
+            return userRepository.save(user);
+        }
+
+        // Buscar por email
+        Optional<UserEntity> existingByEmail = userRepository.findByEmail(email);
+        if (existingByEmail.isPresent()) {
+            UserEntity user = existingByEmail.get();
+            user.setFirebaseUid(uid);
+            user.setDisplayName(displayName);
+            user.setProvider(provider);
+            return userRepository.save(user);
+        }
+
+        // Crear nuevo usuario Firebase
+        UserEntity newUser = UserEntity.builder()
+                .firebaseUid(uid)
+                .email(email)
+                .displayName(displayName)
+                .nombre(extractFirstName(displayName))
+                .apellido(extractLastName(displayName))
+                .telefono("") // Se puede actualizar después
+                .provider(provider)
+                .role(RoleEnum.USER)
+                .activo(true)
+                .createdAt(java.time.Instant.now())
+                .build();
+
+        return userRepository.save(newUser);
+    }
+
+    @Override
+    public UserEntity registerWithFirebase(String uid, String email, String displayName,
+                                           String provider, String firstName, String lastName, String phoneNumber) {
+        UserEntity user = UserEntity.builder()
+                .firebaseUid(uid)
+                .email(email)
+                .displayName(displayName)
+                .nombre(firstName != null ? firstName : extractFirstName(displayName))
+                .apellido(lastName != null ? lastName : extractLastName(displayName))
+                .telefono(phoneNumber != null ? phoneNumber : "")
+                .provider(provider)
+                .role(RoleEnum.USER)
+                .activo(true)
+                .createdAt(java.time.Instant.now())
+                .build();
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public Optional<UserEntity> findByFirebaseUid(String uid) {
+        return userRepository.findByFirebaseUid(uid);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    // Métodos auxiliares
+    private String extractFirstName(String displayName) {
+        if (displayName == null || displayName.trim().isEmpty()) return "Usuario";
+        String[] parts = displayName.trim().split(" ");
+        return parts.length > 0 ? parts[0] : "Usuario";
+    }
+
+    private String extractLastName(String displayName) {
+        if (displayName == null || displayName.trim().isEmpty()) return "Firebase";
+        String[] parts = displayName.trim().split(" ");
+        return parts.length > 1 ? String.join(" ", java.util.Arrays.copyOfRange(parts, 1, parts.length)) : "Firebase";
     }
 }

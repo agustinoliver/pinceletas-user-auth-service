@@ -12,4 +12,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>{
     @Modifying
     @Query("UPDATE UserEntity u SET u.activo = false WHERE u.email = :email")
     void deactivateByEmail(@Param("email") String email);
+    // ========== NUEVOS MÉTODOS FIREBASE (AGREGAR) ==========
+    Optional<UserEntity> findByFirebaseUid(String firebaseUid);
+    boolean existsByFirebaseUid(String firebaseUid);
 }

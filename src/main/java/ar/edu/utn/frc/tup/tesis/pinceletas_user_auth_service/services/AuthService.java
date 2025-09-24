@@ -7,5 +7,7 @@ public interface AuthService {
     AuthResponse login(LoginRequest request);
     void forgotPassword(ForgotPasswordRequest request);
     void resetPassword(ResetPasswordRequest request);
+    AuthResponse registerWithFirebase(FirebaseRegisterRequest request);
+    AuthResponse loginWithFirebase(FirebaseLoginRequest request);
 
 }

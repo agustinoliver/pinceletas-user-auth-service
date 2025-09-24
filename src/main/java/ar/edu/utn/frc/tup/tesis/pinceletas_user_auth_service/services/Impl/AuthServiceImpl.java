@@ -54,4 +54,57 @@ public class AuthServiceImpl implements AuthService{
                 request.getConfirmNewPassword()
         );
     }
+    @Override
+    public AuthResponse registerWithFirebase(FirebaseRegisterRequest request) {
+        try {
+            com.google.firebase.auth.FirebaseToken decoded =
+                    com.google.firebase.auth.FirebaseAuth.getInstance()
+                            .verifyIdToken(request.getFirebaseIdToken());
+
+            String uid = decoded.getUid();
+            String email = decoded.getEmail();
+            String name = (String) decoded.getClaims().getOrDefault("name", email);
+
+            // Verificar si ya existe
+            if (userService.existsByEmail(email)) {
+                throw new RuntimeException("El email ya está registrado");
+            }
+
+            UserEntity user = userService.registerWithFirebase(
+                    uid, email, name, "firebase",
+                    request.getFirstName(), request.getLastName(), request.getPhoneNumber()
+            );
+
+            // Usar tu JWT service existente
+            String token = jwtService.generateToken(user.getEmail());
+            return new AuthResponse(token);
+        } catch (Exception e) {
+            throw new RuntimeException("Error en el registro con Firebase: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public AuthResponse loginWithFirebase(FirebaseLoginRequest request) {
+        try {
+            com.google.firebase.auth.FirebaseToken decoded =
+                    com.google.firebase.auth.FirebaseAuth.getInstance()
+                            .verifyIdToken(request.getFirebaseIdToken());
+
+            String uid = decoded.getUid();
+            String email = decoded.getEmail();
+            String name = (String) decoded.getClaims().getOrDefault("name", email);
+
+            UserEntity user = userService.upsertFirebaseUser(uid, email, name, "firebase");
+
+            if (!user.isActivo()) {
+                throw new RuntimeException("La cuenta está desactivada");
+            }
+
+            // Usar tu JWT service existente
+            String token = jwtService.generateToken(user.getEmail());
+            return new AuthResponse(token);
+        } catch (Exception e) {
+            throw new RuntimeException("Error en el login con Firebase: " + e.getMessage());
+        }
+    }
 }

@@ -48,4 +48,15 @@ public class AuthController {
         authService.resetPassword(request);
         return ResponseEntity.ok("Contraseña restablecida exitosamente");
     }
+    @PostMapping("/firebase/login")
+    @Operation(summary = "Login con Firebase", description = "Autenticación usando Google/Facebook/etc via Firebase")
+    public ResponseEntity<AuthResponse> loginWithFirebase(@Valid @RequestBody FirebaseLoginRequest request) {
+        return ResponseEntity.ok(authService.loginWithFirebase(request));
+    }
+
+    @PostMapping("/firebase/register")
+    @Operation(summary = "Registro con Firebase", description = "Registro usando Google/Facebook/etc via Firebase")
+    public ResponseEntity<AuthResponse> registerWithFirebase(@Valid @RequestBody FirebaseRegisterRequest request) {
+        return ResponseEntity.ok(authService.registerWithFirebase(request));
+    }
 }
