@@ -1,7 +1,11 @@
 package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services.Impl;
 
 
-import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.*;
+import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.auth.RegisterUserRequest;
+import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.user.ChangePasswordRequest;
+import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.user.UpdateAddressRequest;
+import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.user.UpdateUserRequest;
+import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.user.UserResponse;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.enums.RoleEnum;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.model.UserEntity;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.repository.UserRepository;

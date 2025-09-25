@@ -1,4 +1,4 @@
-package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto;
+package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.user;
 
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.enums.RoleEnum;
 import lombok.AllArgsConstructor;

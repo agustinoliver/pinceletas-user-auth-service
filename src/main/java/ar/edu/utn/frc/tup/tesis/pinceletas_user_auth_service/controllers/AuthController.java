@@ -1,6 +1,6 @@
 package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.controllers;
 
-import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.*;
+import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.auth.*;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

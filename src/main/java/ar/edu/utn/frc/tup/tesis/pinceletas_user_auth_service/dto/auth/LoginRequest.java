@@ -1,4 +1,4 @@
-package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto;
+package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.auth;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
