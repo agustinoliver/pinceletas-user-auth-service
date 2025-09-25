@@ -1,7 +1,6 @@
 package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.*;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.model.UserEntity;
-
 import java.util.Optional;
 
 public interface UserService {
