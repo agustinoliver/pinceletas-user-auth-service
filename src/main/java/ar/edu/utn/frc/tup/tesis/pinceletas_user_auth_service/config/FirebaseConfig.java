@@ -6,31 +6,49 @@ import com.google.firebase.FirebaseOptions;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class FirebaseConfig {
     @Value("${firebase.project-id}")
     private String projectId;
 
+    // Nueva variable para credenciales desde entorno
+    @Value("${firebase.credentials.json:#{null}}")
+    private String firebaseCredentialsJson;
+
     @PostConstruct
     public void init() throws Exception {
         if (FirebaseApp.getApps().isEmpty()) {
-            try (InputStream serviceAccount = getClass()
-                    .getClassLoader()
-                    .getResourceAsStream("firebase-service-account.json")) {
+            GoogleCredentials credentials;
 
-                if (serviceAccount == null) {
-                    throw new RuntimeException("No se encontró firebase-service-account.json");
+            if (firebaseCredentialsJson != null && !firebaseCredentialsJson.isEmpty()) {
+                // Usar credenciales desde variable de entorno
+                InputStream credentialsStream = new ByteArrayInputStream(
+                        firebaseCredentialsJson.getBytes(StandardCharsets.UTF_8)
+                );
+                credentials = GoogleCredentials.fromStream(credentialsStream);
+            } else {
+                // Fallback al archivo local (solo para desarrollo)
+                try (InputStream serviceAccount = getClass()
+                        .getClassLoader()
+                        .getResourceAsStream("firebase-service-account.json")) {
+
+                    if (serviceAccount == null) {
+                        throw new RuntimeException("No se encontró firebase-service-account.json ni variables de entorno");
+                    }
+                    credentials = GoogleCredentials.fromStream(serviceAccount);
                 }
-
-                FirebaseOptions options = FirebaseOptions.builder()
-                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                        .setProjectId(projectId)
-                        .build();
-
-                FirebaseApp.initializeApp(options);
             }
+
+            FirebaseOptions options = FirebaseOptions.builder()
+                    .setCredentials(credentials)
+                    .setProjectId(projectId)
+                    .build();
+
+            FirebaseApp.initializeApp(options);
         }
     }
 }
