@@ -7,16 +7,16 @@ import java.util.Map;
 @Data
 public class RestCountriesApiResponse {
     private Name name;
-    private String cca2;      // Código de 2 letras
-    private String cca3;      // Código de 3 letras
-    private String ccn3;      // Código numérico
+    private String cca2;
+    private String cca3;
+    private String ccn3;
     private List<String> capital;
     private String region;
     private String subregion;
     private Map<String, Currency> currencies;
-    private String flag;      // Emoji de bandera
-    private Map<String, String> flags; // URLs de banderas
-    private Idd idd;         // Información de código telefónico
+    private String flag;
+    private Map<String, String> flags;
+    private Idd idd;
 
     @Data
     public static class Name {

@@ -65,7 +65,6 @@ public class AuthServiceImpl implements AuthService{
             String email = decoded.getEmail();
             String name = (String) decoded.getClaims().getOrDefault("name", email);
 
-            // Verificar si ya existe
             if (userService.existsByEmail(email)) {
                 throw new RuntimeException("El email ya está registrado");
             }
@@ -75,7 +74,6 @@ public class AuthServiceImpl implements AuthService{
                     request.getFirstName(), request.getLastName(), request.getPhoneNumber()
             );
 
-            // Usar tu JWT service existente
             String token = jwtService.generateToken(user.getEmail());
             return new AuthResponse(token);
         } catch (Exception e) {
@@ -100,7 +98,6 @@ public class AuthServiceImpl implements AuthService{
                 throw new RuntimeException("La cuenta está desactivada");
             }
 
-            // Usar tu JWT service existente
             String token = jwtService.generateToken(user.getEmail());
             return new AuthResponse(token);
         } catch (Exception e) {

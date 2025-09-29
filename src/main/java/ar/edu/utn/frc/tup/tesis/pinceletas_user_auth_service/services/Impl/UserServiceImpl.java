@@ -141,7 +141,6 @@ public class UserServiceImpl implements UserService{
     }
     @Override
     public UserEntity upsertFirebaseUser(String uid, String email, String displayName, String provider) {
-        // Buscar por Firebase UID primero
         Optional<UserEntity> existingByUid = userRepository.findByFirebaseUid(uid);
         if (existingByUid.isPresent()) {
             UserEntity user = existingByUid.get();
@@ -150,7 +149,6 @@ public class UserServiceImpl implements UserService{
             return userRepository.save(user);
         }
 
-        // Buscar por email
         Optional<UserEntity> existingByEmail = userRepository.findByEmail(email);
         if (existingByEmail.isPresent()) {
             UserEntity user = existingByEmail.get();
@@ -160,14 +158,13 @@ public class UserServiceImpl implements UserService{
             return userRepository.save(user);
         }
 
-        // Crear nuevo usuario Firebase
         UserEntity newUser = UserEntity.builder()
                 .firebaseUid(uid)
                 .email(email)
                 .displayName(displayName)
                 .nombre(extractFirstName(displayName))
                 .apellido(extractLastName(displayName))
-                .telefono("") // Se puede actualizar después
+                .telefono("")
                 .provider(provider)
                 .role(RoleEnum.USER)
                 .activo(true)
@@ -206,7 +203,6 @@ public class UserServiceImpl implements UserService{
         return userRepository.existsByEmail(email);
     }
 
-    // Métodos auxiliares
     private String extractFirstName(String displayName) {
         if (displayName == null || displayName.trim().isEmpty()) return "Usuario";
         String[] parts = displayName.trim().split(" ");

@@ -105,7 +105,6 @@ public class LocationServiceImpl implements LocationService{
                 .collect(Collectors.toList());
     }
 
-    // Métodos de mapeo privados
     private CountryDto mapToCountryDto(RestCountriesApiResponse country) {
         String phoneCode = "";
         if (country.getIdd() != null) {

@@ -25,7 +25,6 @@ public class PasswordResetService {
     private final SecureRandom secureRandom = new SecureRandom();
 
     public void initiatePasswordReset(String email) {
-        // Verificar si el usuario existe
         Optional<UserEntity> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty()) {
             return;

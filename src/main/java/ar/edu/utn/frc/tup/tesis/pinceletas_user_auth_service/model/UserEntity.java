@@ -44,8 +44,8 @@ public class UserEntity {
     private String codigoPostal;
 
     @Column(unique = true, nullable = true)
-    private String firebaseUid; // UID de Firebase (opcional)
-    private String provider; // "password", "google.com", "facebook.com", etc.
-    private String displayName; // Nombre completo de Firebase
-    private java.time.Instant createdAt; // Fecha de creación
+    private String firebaseUid;
+    private String provider;
+    private String displayName;
+    private java.time.Instant createdAt;
 }

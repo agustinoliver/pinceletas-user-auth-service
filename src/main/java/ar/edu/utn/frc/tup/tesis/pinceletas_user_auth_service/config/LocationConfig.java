@@ -22,8 +22,8 @@ public class LocationConfig {
     @Bean
     public ClientHttpRequestFactory clientHttpRequestFactory() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(5000); // 5 segundos
-        factory.setReadTimeout(10000);   // 10 segundos
+        factory.setConnectTimeout(5000);
+        factory.setReadTimeout(10000);
         return factory;
     }
 

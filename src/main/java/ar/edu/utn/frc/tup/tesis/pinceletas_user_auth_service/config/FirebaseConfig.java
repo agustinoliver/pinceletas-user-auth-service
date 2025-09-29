@@ -15,7 +15,6 @@ public class FirebaseConfig {
     @Value("${firebase.project-id}")
     private String projectId;
 
-    // Nueva variable para credenciales desde entorno
     @Value("${firebase.credentials.json:#{null}}")
     private String firebaseCredentialsJson;
 
@@ -25,13 +24,11 @@ public class FirebaseConfig {
             GoogleCredentials credentials;
 
             if (firebaseCredentialsJson != null && !firebaseCredentialsJson.isEmpty()) {
-                // Usar credenciales desde variable de entorno
                 InputStream credentialsStream = new ByteArrayInputStream(
                         firebaseCredentialsJson.getBytes(StandardCharsets.UTF_8)
                 );
                 credentials = GoogleCredentials.fromStream(credentialsStream);
             } else {
-                // Fallback al archivo local (solo para desarrollo)
                 try (InputStream serviceAccount = getClass()
                         .getClassLoader()
                         .getResourceAsStream("firebase-service-account.json")) {
