@@ -3,6 +3,7 @@ package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -29,33 +30,35 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // Endpoints públicos de autenticación
                         .requestMatchers("/api/auth/register", "/api/auth/login",
                                 "/api/auth/forgot-password", "/api/auth/reset-password").permitAll()
-
                         .requestMatchers("/api/auth/firebase/login", "/api/auth/firebase/register").permitAll()
 
+                        // Documentación pública
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**",
                                 "/webjars/**", "/api-docs/**", "/swagger-ui.html").permitAll()
-
                         .requestMatchers("/health").permitAll()
-
                         .requestMatchers("/h2-console/**").permitAll()
 
+                        // Locations público
                         .requestMatchers("/api/locations/**").permitAll()
-
                         .requestMatchers("/api/admin/locations/**").permitAll()
 
-                        .requestMatchers("/api/users/**").authenticated()
+                        // DELETE de usuarios: SOLO ADMIN
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/profile/**").hasRole("ADMIN")
 
+                        // Resto de operaciones de usuarios: autenticados (USER y ADMIN)
+                        .requestMatchers(HttpMethod.GET, "/api/users/profile/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/users/profile/**").authenticated()
+
+                        // Cualquier otro endpoint requiere autenticación
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
                 .authenticationProvider(authenticationProvider())
-
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-
                 .headers(headers -> headers
                         .frameOptions(frameOptions -> frameOptions.disable())
                 );
@@ -72,6 +75,7 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
