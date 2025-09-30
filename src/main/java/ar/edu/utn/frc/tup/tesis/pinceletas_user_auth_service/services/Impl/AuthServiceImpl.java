@@ -3,9 +3,9 @@ package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services.Impl;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.auth.*;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.model.UserEntity;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services.AuthService;
-import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services.JwtService;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services.PasswordResetService;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services.UserService;
+import ar.edu.utn.frc.tup.tesis.pinceletas.common.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public AuthResponse register(RegisterUserRequest request) {
         UserEntity user = userService.register(request);
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
         return new AuthResponse(token);
     }
 
@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService{
             throw new RuntimeException("Credenciales inválidas");
         }
 
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
         return new AuthResponse(token);
     }
 
@@ -74,7 +74,7 @@ public class AuthServiceImpl implements AuthService{
                     request.getFirstName(), request.getLastName(), request.getPhoneNumber()
             );
 
-            String token = jwtService.generateToken(user.getEmail());
+            String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
             return new AuthResponse(token);
         } catch (Exception e) {
             throw new RuntimeException("Error en el registro con Firebase: " + e.getMessage());
@@ -98,7 +98,7 @@ public class AuthServiceImpl implements AuthService{
                 throw new RuntimeException("La cuenta está desactivada");
             }
 
-            String token = jwtService.generateToken(user.getEmail());
+            String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
             return new AuthResponse(token);
         } catch (Exception e) {
             throw new RuntimeException("Error en el login con Firebase: " + e.getMessage());
