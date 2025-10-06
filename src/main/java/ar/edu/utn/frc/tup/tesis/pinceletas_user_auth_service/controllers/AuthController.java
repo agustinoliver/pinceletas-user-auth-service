@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,11 +34,26 @@ public class AuthController {
     @Operation(summary = "Solicitar recuperación de contraseña", description = "Envía un token de recuperación por email")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Token de recuperación enviado"),
-            @ApiResponse(responseCode = "400", description = "Email inválido")
+            @ApiResponse(responseCode = "400", description = "Email inválido o no registrado"),
+            @ApiResponse(responseCode = "404", description = "Email no encontrado")
     })
     public ResponseEntity<MessageResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-        authService.forgotPassword(request);
-        return ResponseEntity.ok(MessageResponse.of("Si el email existe en nuestro sistema, recibirás un token de recuperación"));
+        try {
+            authService.forgotPassword(request);
+            return ResponseEntity.ok(MessageResponse.of("Si el email existe en nuestro sistema, recibirás un token de recuperación"));
+        } catch (RuntimeException e) {
+            // Manejar específicamente el error de email no registrado
+            if (e.getMessage().contains("no se encuentra registrado")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(MessageResponse.of(e.getMessage()));
+            } else if (e.getMessage().contains("desactivada")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(MessageResponse.of(e.getMessage()));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(MessageResponse.of(e.getMessage()));
+            }
+        }
     }
 
     @PostMapping("/reset-password")
