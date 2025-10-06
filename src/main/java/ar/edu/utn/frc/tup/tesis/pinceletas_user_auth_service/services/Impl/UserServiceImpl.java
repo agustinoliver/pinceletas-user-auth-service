@@ -85,6 +85,8 @@ public class UserServiceImpl implements UserService{
         user.setPais(request.getPais());
         user.setProvincia(request.getProvincia());
         user.setCodigoPostal(request.getCodigoPostal());
+        user.setManzana(request.getManzana());
+        user.setLote(request.getLote());
 
         UserEntity updatedUser = userRepository.save(user);
         return mapToUserResponse(updatedUser);
@@ -136,6 +138,8 @@ public class UserServiceImpl implements UserService{
         response.setPais(user.getPais());
         response.setProvincia(user.getProvincia());
         response.setCodigoPostal(user.getCodigoPostal());
+        response.setManzana(user.getManzana());
+        response.setLote(user.getLote());
 
         return response;
     }

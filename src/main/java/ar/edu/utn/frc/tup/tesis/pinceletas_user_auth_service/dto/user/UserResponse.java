@@ -25,4 +25,6 @@ public class UserResponse {
     private String pais;
     private String provincia;
     private String codigoPostal;
+    private String manzana;
+    private String lote;
 }
