@@ -28,4 +28,10 @@ public class UpdateAddressRequest {
 
     @Size(max = 20, message = "El código postal no puede exceder 20 caracteres")
     private String codigoPostal;
+
+    @Size(max = 20, message = "La manzana no puede exceder 20 caracteres")
+    private String manzana;
+
+    @Size(max = 20, message = "El lote no puede exceder 20 caracteres")
+    private String lote;
 }

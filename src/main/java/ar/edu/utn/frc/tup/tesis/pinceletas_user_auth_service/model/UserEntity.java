@@ -42,6 +42,8 @@ public class UserEntity {
     private String pais;
     private String provincia;
     private String codigoPostal;
+    private String manzana;
+    private String lote;
 
     @Column(unique = true, nullable = true)
     private String firebaseUid;

@@ -1,5 +1,6 @@
 package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.controllers;
 
+import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.common.MessageResponse;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.user.ChangePasswordRequest;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.user.UpdateAddressRequest;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.user.UpdateUserRequest;
@@ -47,28 +48,28 @@ public class UserController {
 
     @PutMapping("/profile/{email}/password")
     @Operation(summary = "Cambiar contraseña", description = "Cualquier usuario autenticado puede cambiar contraseñas")
-    public ResponseEntity<String> changePassword(
+    public ResponseEntity<MessageResponse> changePassword(
             @PathVariable String email,
             @Valid @RequestBody ChangePasswordRequest request) {
         userService.changePassword(email, request);
-        return ResponseEntity.ok("Contraseña cambiada exitosamente");
+        return ResponseEntity.ok(MessageResponse.of("Contraseña cambiada exitosamente"));
     }
 
     @DeleteMapping("/profile/{email}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Eliminar usuario",
-            description = "⚠️ SOLO ADMIN - Elimina permanentemente un usuario del sistema"
+            description = "SOLO ADMIN - Elimina permanentemente un usuario del sistema"
     )
-    public ResponseEntity<String> deleteUser(@PathVariable String email) {
+    public ResponseEntity<MessageResponse> deleteUser(@PathVariable String email) {
         userService.deleteUser(email);
-        return ResponseEntity.ok("Usuario eliminado exitosamente");
+        return ResponseEntity.ok(MessageResponse.of("Usuario eliminado exitosamente"));
     }
 
     @PutMapping("/profile/{email}/deactivate")
     @Operation(summary = "Desactivar usuario", description = "Cualquier usuario autenticado puede desactivar cuentas")
-    public ResponseEntity<String> deactivateUser(@PathVariable String email) {
+    public ResponseEntity<MessageResponse> deactivateUser(@PathVariable String email) {
         userService.deactivateUser(email);
-        return ResponseEntity.ok("Usuario desactivado exitosamente");
+        return ResponseEntity.ok(MessageResponse.of("Usuario desactivado exitosamente"));
     }
 }
