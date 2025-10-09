@@ -20,15 +20,29 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Configuración de seguridad de Spring Security.
+ * Define las reglas de autorización, filtros JWT y proveedores de autenticación.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
+    /** Filtro JWT personalizado para validar tokens en cada request. */
     private final JwtAuthenticationFilter jwtAuthFilter;
+
+    /** Servicio para cargar detalles de usuarios desde la base de datos. */
     private final UserDetailsService userDetailsService;
 
+    /**
+     * Configura la cadena de filtros de seguridad y las reglas de autorización.
+     * Define qué endpoints son públicos y cuáles requieren autenticación.
+     *
+     * @param http Objeto HttpSecurity para configurar la seguridad.
+     * @return SecurityFilterChain configurada.
+     * @throws Exception Si hay error en la configuración.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -65,16 +79,34 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Crea el codificador de contraseñas usando BCrypt.
+     *
+     * @return PasswordEncoder configurado con BCrypt.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Crea el gestor de autenticación de Spring Security.
+     *
+     * @param config Configuración de autenticación de Spring.
+     * @return AuthenticationManager configurado.
+     * @throws Exception Si hay error al obtener el AuthenticationManager.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * Configura el proveedor de autenticación DAO.
+     * Conecta el UserDetailsService con el PasswordEncoder.
+     *
+     * @return AuthenticationProvider configurado.
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();

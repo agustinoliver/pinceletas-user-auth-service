@@ -5,18 +5,30 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Respuesta con los datos completos del perfil de usuario.
+ * Incluye información personal, datos de contacto, rol y dirección completa.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResponse {
+    /** Identificador único del usuario en la base de datos. */
     private Long id;
+    /** Primer nombre del usuario. */
     private String nombre;
+    /** Apellido del usuario. */
     private String apellido;
+    /** Email único del usuario. */
     private String email;
+    /** Número de teléfono del usuario. */
     private String telefono;
+    /** Rol del usuario en el sistema (USER o ADMIN). */
     private RoleEnum role;
+    /** Estado de activación de la cuenta del usuario. */
     private boolean activo;
 
+    // Campos de dirección
     private String calle;
     private String numero;
     private String ciudad;

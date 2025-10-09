@@ -8,10 +8,19 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
-
+/**
+ * Configuración para el servicio de ubicaciones geográficas.
+ * Define RestTemplate y caché para optimizar las consultas a APIs externas de países y provincias.
+ */
 @Configuration
 @EnableCaching
 public class LocationConfig {
+
+    /**
+     * Crea un RestTemplate configurado para consultas a APIs de ubicaciones.
+     *
+     * @return RestTemplate con timeouts configurados.
+     */
     @Bean
     public RestTemplate locationRestTemplate() {
         RestTemplate restTemplate = new RestTemplate();
@@ -19,6 +28,11 @@ public class LocationConfig {
         return restTemplate;
     }
 
+    /**
+     * Configura los timeouts para las peticiones HTTP del RestTemplate.
+     *
+     * @return ClientHttpRequestFactory con timeouts de conexión y lectura.
+     */
     @Bean
     public ClientHttpRequestFactory clientHttpRequestFactory() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
@@ -27,6 +41,12 @@ public class LocationConfig {
         return factory;
     }
 
+    /**
+     * Configura el gestor de caché para almacenar respuestas de las APIs de ubicaciones.
+     * Reduce la cantidad de peticiones a las APIs externas y mejora el rendimiento.
+     *
+     * @return CacheManager con cachés para countries, country y states.
+     */
     @Bean
     public CacheManager locationCacheManager() {
         ConcurrentMapCacheManager cacheManager = new ConcurrentMapCacheManager();

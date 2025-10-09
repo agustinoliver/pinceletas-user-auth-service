@@ -10,14 +10,27 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Configuración de Firebase para autenticación con proveedores externos.
+ * Inicializa Firebase Admin SDK con credenciales desde variables de entorno o archivo.
+ */
 @Configuration
 public class FirebaseConfig {
+
+    /** ID del proyecto de Firebase. */
     @Value("${firebase.project-id}")
     private String projectId;
 
+    /** Credenciales de Firebase en formato JSON (variable de entorno). */
     @Value("${firebase.credentials.json:#{null}}")
     private String firebaseCredentialsJson;
 
+    /**
+     * Inicializa Firebase Admin SDK después de la construcción del bean.
+     * Intenta cargar credenciales primero desde variable de entorno, luego desde archivo.
+     *
+     * @throws Exception Si no se encuentran las credenciales o hay error en la inicialización.
+     */
     @PostConstruct
     public void init() throws Exception {
         if (FirebaseApp.getApps().isEmpty()) {
