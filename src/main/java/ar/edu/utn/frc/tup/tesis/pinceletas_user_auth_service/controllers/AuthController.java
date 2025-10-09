@@ -42,7 +42,6 @@ public class AuthController {
             authService.forgotPassword(request);
             return ResponseEntity.ok(MessageResponse.of("Si el email existe en nuestro sistema, recibirás un token de recuperación"));
         } catch (RuntimeException e) {
-            // Manejar específicamente el error de email no registrado
             if (e.getMessage().contains("no se encuentra registrado")) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(MessageResponse.of(e.getMessage()));

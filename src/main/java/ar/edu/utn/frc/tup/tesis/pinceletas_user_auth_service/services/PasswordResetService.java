@@ -32,7 +32,6 @@ public class PasswordResetService {
         Optional<UserEntity> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty()) {
             log.warn("Intento de recuperación con email no registrado: {}", email);
-            // CAMBIO IMPORTANTE: Lanzar excepción específica
             throw new RuntimeException("El email ingresado no se encuentra registrado en el sistema");
         }
 
