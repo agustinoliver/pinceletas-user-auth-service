@@ -15,21 +15,39 @@ import org.springframework.web.client.ResourceAccessException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Implementación del servicio de ubicaciones geográficas.
+ * Obtiene datos de países y estados/provincias de APIs externas y los cachea para mejor rendimiento.
+ * Maneja errores de conexión y proporciona respuestas vacías en caso de fallos.
+ */
 @Service
 @Slf4j
 public class LocationServiceImpl implements LocationService{
+    /** Cliente REST para realizar peticiones a las APIs externas. */
     private final RestTemplate restTemplate;
 
+    /** URL de la API CountriesNow para obtener estados/provincias. */
     @Value("${app.location.api.countries-states.url:https://countriesnow.space/api/v0.1/countries}")
     private String countriesStatesApiUrl;
 
+    /** URL de la API RestCountries para obtener información de países. */
     @Value("${app.location.api.rest-countries.url:https://restcountries.com/v3.1}")
     private String restCountriesApiUrl;
 
+    /**
+     * Constructor que inicializa el RestTemplate para consultas HTTP.
+     */
     public LocationServiceImpl() {
         this.restTemplate = new RestTemplate();
     }
 
+    /**
+     * Obtiene la lista completa de todos los países disponibles.
+     * Los datos se obtienen de la API RestCountries y se cachean para mejorar el rendimiento.
+     * En caso de error, retorna una lista vacía para evitar fallos en la aplicación.
+     *
+     * @return Lista de CountryDto ordenada alfabéticamente por nombre, o lista vacía en caso de error.
+     */
     @Override
     @Cacheable(value = "countries", unless = "#result.isEmpty()")
     public List<CountryDto> getAllCountries() {
@@ -60,6 +78,14 @@ public class LocationServiceImpl implements LocationService{
         return Collections.emptyList();
     }
 
+    /**
+     * Obtiene los estados/provincias de un país específico.
+     * Los datos se obtienen de la API CountriesNow y se cachean por código de país.
+     * En caso de error, retorna una lista vacía.
+     *
+     * @param countryCode Código ISO del país (ej: AR, US, BR).
+     * @return Lista de StateDto con las divisiones administrativas del país, o lista vacía en caso de error.
+     */
     @Override
     @Cacheable(value = "states", key = "#countryCode", unless = "#result.isEmpty()")
     public List<StateDto> getStatesByCountry(String countryCode) {
@@ -94,6 +120,15 @@ public class LocationServiceImpl implements LocationService{
         log.warn("No se pudieron obtener estados para el país: {}", countryCode);
         return Collections.emptyList();
     }
+
+    /**
+     * Busca países por nombre o código.
+     * Realiza una búsqueda case-insensitive en la lista completa de países cacheada.
+     * Limita los resultados a 20 para evitar sobrecarga.
+     *
+     * @param query Texto a buscar en nombre o código de país.
+     * @return Lista de CountryDto que coinciden con la búsqueda (máximo 20 resultados).
+     */
     @Override
     public List<CountryDto> searchCountries(String query) {
         log.info("Buscando países con query: {}", query);
@@ -105,6 +140,13 @@ public class LocationServiceImpl implements LocationService{
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Convierte la respuesta de RestCountries API a un CountryDto.
+     * Extrae y formatea la información relevante para el sistema.
+     *
+     * @param country Respuesta de la API RestCountries.
+     * @return CountryDto con la información formateada.
+     */
     private CountryDto mapToCountryDto(RestCountriesApiResponse country) {
         String phoneCode = "";
         if (country.getIdd() != null) {
@@ -129,6 +171,14 @@ public class LocationServiceImpl implements LocationService{
                 .build();
     }
 
+    /**
+     * Convierte la respuesta de CountriesNow API a un StateDto.
+     * Asocia el estado/provincia con el código de país proporcionado.
+     *
+     * @param state Datos del estado/provincia de la API.
+     * @param countryCode Código del país al que pertenece el estado.
+     * @return StateDto con la información formateada.
+     */
     private StateDto mapToStateDto(CountryStatesApiResponse.StateData state, String countryCode) {
         return StateDto.builder()
                 .code(state.getState_code())

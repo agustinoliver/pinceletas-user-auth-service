@@ -10,18 +10,30 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+/**
+ * Servicio para envío de emails del sistema.
+ * Gestiona el envío de emails HTML con templates personalizados para diferentes propósitos.
+ * Actualmente implementa el envío de emails de recuperación de contraseña.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class EmailService {
+    /** Cliente de Spring para envío de emails. */
     private final JavaMailSender mailSender;
 
+    /** Email remitente configurado para todos los emails del sistema. */
     @Value("${app.mail.from:noreply@pinceletas.com}")
     private String fromEmail;
 
+    /** Usuario de email para autenticación con el servidor SMTP. */
     @Value("${spring.mail.username}")
     private String emailUsername;
 
+    /**
+     * Método de inicialización que logra la configuración de email para debugging.
+     * Se ejecuta automáticamente después de la construcción del bean.
+     */
     @PostConstruct
     public void init() {
         log.info("🔍 === CONFIGURACIÓN DE EMAIL DEBUG ===");
@@ -30,6 +42,14 @@ public class EmailService {
         log.info("🔍 === FIN DEBUG ===");
     }
 
+    /**
+     * Envía un email de recuperación de contraseña con el token de 6 dígitos.
+     * Utiliza un template HTML personalizado con la identidad visual de Pinceletas.
+     *
+     * @param to Email del destinatario.
+     * @param token Token de 6 dígitos para recuperación de contraseña.
+     * @throws RuntimeException si hay errores en el envío del email.
+     */
     public void sendPasswordResetEmail(String to, String token) {
         log.info("🔍 DEBUG - Antes de enviar email:");
         log.info("🔍 Username: {}", emailUsername);
@@ -56,6 +76,14 @@ public class EmailService {
             throw new RuntimeException("Error enviando el email de recuperación: " + e.getMessage());
         }
     }
+
+    /**
+     * Construye el contenido HTML del email de recuperación de contraseña.
+     * Genera un template responsive con la identidad visual de la aplicación.
+     *
+     * @param token Token de 6 dígitos a incluir en el email.
+     * @return String con el contenido HTML completo del email.
+     */
     private String buildPasswordResetEmailContent(String token) {
         return """
             <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; padding: 30px;">
