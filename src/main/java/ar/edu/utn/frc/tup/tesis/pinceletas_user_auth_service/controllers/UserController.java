@@ -5,11 +5,13 @@ import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.user.ChangePass
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.user.UpdateAddressRequest;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.user.UpdateUserRequest;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.user.UserResponse;
+import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.model.UserEntity;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +29,9 @@ import jakarta.validation.Valid;
 @SecurityRequirement(name = "Bearer Authentication")
 public class UserController {
 
-    /** Servicio para gestión de usuarios y sus datos. */
+    /**
+     * Servicio para gestión de usuarios y sus datos.
+     */
     private final UserService userService;
 
     /**
@@ -47,7 +51,7 @@ public class UserController {
      * Actualiza los datos básicos del perfil de un usuario.
      * Permite modificar nombre, apellido, email y teléfono.
      *
-     * @param email Email del usuario a actualizar.
+     * @param email   Email del usuario a actualizar.
      * @param request Nuevos datos del usuario.
      * @return UserResponse con los datos actualizados del usuario.
      */
@@ -63,7 +67,7 @@ public class UserController {
      * Actualiza la dirección completa de un usuario.
      * Incluye calle, número, ciudad, provincia, país y código postal.
      *
-     * @param email Email del usuario.
+     * @param email   Email del usuario.
      * @param request Datos de la nueva dirección.
      * @return UserResponse con los datos actualizados incluyendo la dirección.
      */
@@ -79,7 +83,7 @@ public class UserController {
      * Cambia la contraseña de un usuario.
      * Requiere la contraseña actual para validar la operación.
      *
-     * @param email Email del usuario.
+     * @param email   Email del usuario.
      * @param request Contraseña actual y nueva contraseña.
      * @return MessageResponse confirmando el cambio de contraseña.
      */
@@ -123,4 +127,41 @@ public class UserController {
         userService.deactivateUser(email);
         return ResponseEntity.ok(MessageResponse.of("Usuario desactivado exitosamente"));
     }
+
+
+
+    /**
+     * Obtiene información básica del usuario por email para comunicación entre servicios.
+     * Este endpoint está diseñado específicamente para comunicación entre microservicios.
+     *
+     * @param email Email del usuario a consultar.
+     * @return UserBasicInfo con los datos básicos del usuario.
+     */
+    @GetMapping("/by-email")
+    @Operation(summary = "Obtener información básica de usuario por email",
+            description = "Endpoint para comunicación entre microservicios")
+    public ResponseEntity<UserBasicInfo> getUserByEmail(@RequestParam String email) {
+        try {
+            UserEntity user = userService.findByEmail(email);
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            UserBasicInfo response = new UserBasicInfo(
+                    user.getId(),
+                    user.getEmail(),
+                    user.getNombre(),
+                    user.getApellido(),
+                    user.getRole().name()
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // Record para la respuesta específica de este endpoint
+    public record UserBasicInfo(Long id, String email, String nombre, String apellido, String role) {}
+
 }

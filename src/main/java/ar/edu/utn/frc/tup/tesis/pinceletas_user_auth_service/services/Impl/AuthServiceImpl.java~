@@ -150,19 +150,13 @@ public class AuthServiceImpl implements AuthService{
                     request.getFirstName(), request.getLastName(), request.getPhoneNumber()
             );
 
-            // 🔔 Para el ADMIN - Nuevo registro con Firebase
+            // 🔔 SOLO para ADMIN - Nuevo registro con Firebase
             notificacionEventService.enviarNotificacionNuevoRegistro(
                     user.getEmail(),
                     user.getId(),
                     user.getDisplayName()
             );
 
-            // 🔔 Para el USUARIO - Bienvenida por registro con Firebase
-            notificacionEventService.enviarNotificacionBienvenidaRegistro(
-                    user.getEmail(),
-                    user.getId(),
-                    user.getDisplayName()
-            );
             String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
             return new AuthResponse(token);
         } catch (Exception e) {

@@ -1,0 +1,12 @@
+package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.Rabbit.events;
+
+
+public class NotificacionEvent {
+
+    private String titulo;
+    private String mensaje;
+    private String tipo;
+    private Long usuarioId;
+    private String metadata;
+    private String targetRole;
+}

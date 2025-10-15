@@ -64,6 +64,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/locations/**").permitAll()
                         .requestMatchers("/api/admin/locations/**").permitAll()
 
+                        // 🔥 NUEVO: Permitir acceso público al endpoint de comunicación entre servicios
+                        .requestMatchers(HttpMethod.GET, "/api/users/by-email").permitAll()
+
                         .requestMatchers(HttpMethod.DELETE, "/api/users/profile/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/users/profile/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/users/profile/**").authenticated()
