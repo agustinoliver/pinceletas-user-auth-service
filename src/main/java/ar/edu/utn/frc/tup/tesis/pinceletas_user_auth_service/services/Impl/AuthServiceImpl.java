@@ -10,6 +10,7 @@ import ar.edu.utn.frc.tup.tesis.pinceletas.common.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 
 /**
  * Implementación del servicio de autenticación.
@@ -81,6 +82,10 @@ public class AuthServiceImpl implements AuthService{
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Credenciales inválidas");
         }
+
+        // 🔄 ACTUALIZAR SOLO lastActivityAt
+        user.setLastActivityAt(LocalDateTime.now());
+        userService.saveUser(user);
 
         // 🔔 Para TODOS los usuarios - Inicio de sesión
         notificacionEventService.enviarNotificacionInicioSesion(
@@ -197,6 +202,10 @@ public class AuthServiceImpl implements AuthService{
             if (!user.isActivo()) {
                 throw new RuntimeException("La cuenta está desactivada");
             }
+
+            // 🔄 ACTUALIZAR SOLO lastActivityAt
+            user.setLastActivityAt(LocalDateTime.now());
+            userService.saveUser(user);
 
             // 🔔 Para el USUARIO - Inicio de sesión con Firebase
             notificacionEventService.enviarNotificacionInicioSesionFirebase(

@@ -67,6 +67,9 @@ public class SecurityConfig {
                         // 🔥 NUEVO: Permitir acceso público al endpoint de comunicación entre servicios
                         .requestMatchers(HttpMethod.GET, "/api/users/by-email").permitAll()
 
+                        // 🔥 IMPORTANTE: Endpoint de reportes público para comunicación entre microservicios
+                        .requestMatchers(HttpMethod.GET, "/api/reports/users/active-inactive").permitAll()
+
                         .requestMatchers(HttpMethod.DELETE, "/api/users/profile/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/users/profile/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/users/profile/**").authenticated()

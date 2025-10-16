@@ -3,6 +3,8 @@ import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 /**
  * Entidad principal que representa un usuario en el sistema.
  * Almacena toda la información personal, de autenticación y dirección del usuario.
@@ -68,4 +70,12 @@ public class UserEntity {
     private String displayName;
     /** Fecha y hora de creación del usuario en formato timestamp. */
     private java.time.Instant createdAt;
+
+    /** Fecha y hora del último inicio de sesión del usuario. */
+    @Column
+    private LocalDateTime lastLoginAt;
+
+    /** Fecha y hora de la última actividad del usuario en el sistema. */
+    @Column
+    private LocalDateTime lastActivityAt;
 }

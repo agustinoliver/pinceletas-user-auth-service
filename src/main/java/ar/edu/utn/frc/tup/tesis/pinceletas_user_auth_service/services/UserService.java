@@ -120,4 +120,14 @@ public interface UserService {
      * @return true si existe, false en caso contrario.
      */
     boolean existsByEmail(String email);
+
+    // En UserService interface agregar:
+    /**
+     * Guarda un usuario en la base de datos.
+     *
+     * @param user Usuario a guardar.
+     * @return UserEntity guardado.
+     */
+    UserEntity saveUser(UserEntity user);
+
 }

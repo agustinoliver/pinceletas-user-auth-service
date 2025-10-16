@@ -1,0 +1,25 @@
+package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.reports;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * DTO para el reporte de estadísticas de usuarios activos/inactivos.
+ * Utilizado para dashboards y reportes administrativos.
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserStatsReport {
+
+    /** Cantidad de usuarios activos en el sistema. */
+    private long active;
+
+    /** Cantidad de usuarios inactivos/desactivados en el sistema. */
+    private long inactive;
+
+    /** Total de usuarios registrados en el sistema. */
+    private long total;
+}
+

@@ -321,6 +321,7 @@ public class UserServiceImpl implements UserService{
         return userRepository.existsByEmail(email);
     }
 
+
     /**
      * Extrae el primer nombre del displayName de Firebase.
      * Si no se puede determinar, retorna "Usuario" como valor por defecto.
@@ -345,5 +346,10 @@ public class UserServiceImpl implements UserService{
         if (displayName == null || displayName.trim().isEmpty()) return "Firebase";
         String[] parts = displayName.trim().split(" ");
         return parts.length > 1 ? String.join(" ", java.util.Arrays.copyOfRange(parts, 1, parts.length)) : "Firebase";
+    }
+
+    @Override
+    public UserEntity saveUser(UserEntity user) {
+        return userRepository.save(user);
     }
 }

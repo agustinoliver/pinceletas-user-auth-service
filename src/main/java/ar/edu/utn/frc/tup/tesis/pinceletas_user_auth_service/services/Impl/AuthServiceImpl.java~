@@ -10,6 +10,7 @@ import ar.edu.utn.frc.tup.tesis.pinceletas.common.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 
 /**
  * Implementación del servicio de autenticación.
@@ -82,6 +83,10 @@ public class AuthServiceImpl implements AuthService{
             throw new RuntimeException("Credenciales inválidas");
         }
 
+        // 🔄 ACTUALIZAR SOLO lastActivityAt
+        user.setLastActivityAt(LocalDateTime.now());
+        userService.saveUser(user);
+
         // 🔔 Para TODOS los usuarios - Inicio de sesión
         notificacionEventService.enviarNotificacionInicioSesion(
                 user.getEmail(),
@@ -150,13 +155,19 @@ public class AuthServiceImpl implements AuthService{
                     request.getFirstName(), request.getLastName(), request.getPhoneNumber()
             );
 
-            // 🔔 SOLO para ADMIN - Nuevo registro con Firebase
+            // 🔔 Para el ADMIN - Nuevo registro con Firebase
             notificacionEventService.enviarNotificacionNuevoRegistro(
                     user.getEmail(),
                     user.getId(),
                     user.getDisplayName()
             );
 
+            // 🔔 Para el USUARIO - Bienvenida por registro con Firebase
+            notificacionEventService.enviarNotificacionBienvenidaRegistro(
+                    user.getEmail(),
+                    user.getId(),
+                    user.getDisplayName()
+            );
             String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
             return new AuthResponse(token);
         } catch (Exception e) {

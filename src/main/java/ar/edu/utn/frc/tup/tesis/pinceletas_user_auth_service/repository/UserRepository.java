@@ -1,6 +1,12 @@
 package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.repository;
+
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -54,4 +60,31 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>{
      * @return true si existe un usuario con ese UID, false en caso contrario.
      */
     boolean existsByFirebaseUid(String firebaseUid);
+
+    /**
+     * Cuenta la cantidad de usuarios por estado de activación.
+     *
+     * @param activo Estado de activación a filtrar (true = activos, false = inactivos).
+     * @return Cantidad de usuarios con el estado especificado.
+     */
+    long countByActivo(boolean activo);
+
+
+    /**
+     * Actualiza el estado activo de usuarios inactivos por más de 2 semanas.
+     */
+    @Modifying
+    @Query("UPDATE UserEntity u SET u.activo = false WHERE u.lastActivityAt < :cutoffDate AND u.activo = true")
+    int deactivateInactiveUsers(@Param("cutoffDate") LocalDateTime cutoffDate);
+
+    /**
+     * Encuentra usuarios activos con última actividad anterior a una fecha.
+     */
+    List<UserEntity> findByActivoTrueAndLastActivityAtBefore(LocalDateTime cutoffDate);
+
+    /**
+     * Obtiene todos los usuarios del sistema.
+     */
+    List<UserEntity> findAll();
+
 }
