@@ -130,13 +130,4 @@ public interface UserService {
      */
     UserEntity saveUser(UserEntity user);
 
-    /**
-     * Busca un usuario por su ID.
-     *
-     * @param id ID del usuario.
-     * @return UserEntity encontrado.
-     * @throws RuntimeException si el usuario no existe.
-     */
-    UserEntity findById(Long id);
-
 }

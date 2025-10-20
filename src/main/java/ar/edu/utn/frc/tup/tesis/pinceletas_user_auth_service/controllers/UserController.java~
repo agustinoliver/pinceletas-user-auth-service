@@ -164,35 +164,4 @@ public class UserController {
     // Record para la respuesta específica de este endpoint
     public record UserBasicInfo(Long id, String email, String nombre, String apellido, String role) {}
 
-
-    /**
-     * Obtiene el email de un usuario por su ID
-     * Endpoint para comunicación entre microservicios
-     */
-    @GetMapping("/by-id/{id}")
-    @Operation(summary = "Obtener email por ID de usuario",
-            description = "Endpoint para comunicación entre microservicios")
-    public ResponseEntity<UserEmailInfo> getUserEmailById(@PathVariable Long id) {
-        try {
-            UserEntity user = userService.findById(id);
-            if (user == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            UserEmailInfo response = new UserEmailInfo(
-                    user.getId(),
-                    user.getEmail(),
-                    user.getNombre(),
-                    user.getApellido()
-            );
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    // Record para la respuesta
-    public record UserEmailInfo(Long id, String email, String nombre, String apellido) {}
-
 }
