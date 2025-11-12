@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService{
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(RoleEnum.USER)
                 .activo(true)
+                .terminosAceptados(false)
                 .build();
 
         return userRepository.save(user);
@@ -207,6 +208,7 @@ public class UserServiceImpl implements UserService{
         response.setTelefono(user.getTelefono());
         response.setRole(user.getRole());
         response.setActivo(user.isActivo());
+        response.setTerminosAceptados(user.isTerminosAceptados());
 
         response.setCalle(user.getCalle());
         response.setNumero(user.getNumero());
@@ -261,6 +263,7 @@ public class UserServiceImpl implements UserService{
                 .provider(provider)
                 .role(RoleEnum.USER)
                 .activo(true)
+                .terminosAceptados(false)
                 .createdAt(java.time.Instant.now())
                 .build();
 
@@ -293,6 +296,7 @@ public class UserServiceImpl implements UserService{
                 .provider(provider)
                 .role(RoleEnum.USER)
                 .activo(true)
+                .terminosAceptados(false)
                 .createdAt(java.time.Instant.now())
                 .build();
 
@@ -358,5 +362,18 @@ public class UserServiceImpl implements UserService{
     public UserEntity findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+    }
+
+    @Override
+    public UserEntity marcarTerminosAceptados(Long userId) {
+        UserEntity user = findById(userId);
+        user.setTerminosAceptados(true);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public boolean verificarTerminosAceptados(Long userId) {
+        UserEntity user = findById(userId);
+        return user.isTerminosAceptados();
     }
 }

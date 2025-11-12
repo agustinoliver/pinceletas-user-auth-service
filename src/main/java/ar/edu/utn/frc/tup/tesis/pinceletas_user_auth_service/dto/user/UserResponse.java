@@ -28,6 +28,8 @@ public class UserResponse {
     /** Estado de activación de la cuenta del usuario. */
     private boolean activo;
 
+    private boolean terminosAceptados;
+
     // Campos de dirección
     private String calle;
     private String numero;

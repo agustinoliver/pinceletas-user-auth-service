@@ -78,4 +78,9 @@ public class UserEntity {
     /** Fecha y hora de la última actividad del usuario en el sistema. */
     @Column
     private LocalDateTime lastActivityAt;
+
+    /** Indica si el usuario aceptó los términos y condiciones */
+    @Column(name = "terminos_aceptados", nullable = false)
+    private boolean terminosAceptados = false;
+
 }

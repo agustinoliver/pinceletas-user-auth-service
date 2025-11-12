@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Controlador REST para gestión de perfiles de usuario.
  * Proporciona operaciones CRUD sobre usuarios autenticados y sus datos personales.
@@ -195,4 +198,40 @@ public class UserController {
     // Record para la respuesta
     public record UserEmailInfo(Long id, String email, String nombre, String apellido) {}
 
+    /**
+     * Marca los términos y condiciones como aceptados por el usuario.
+     *
+     * @param userId ID del usuario que acepta los términos.
+     * @return MessageResponse confirmando la operación.
+     */
+    @PutMapping("/profile/{userId}/aceptar-terminos")
+    @Operation(summary = "Aceptar términos y condiciones", description = "Marca los términos como aceptados por el usuario")
+    public ResponseEntity<MessageResponse> aceptarTerminos(@PathVariable Long userId) {
+        try {
+            userService.marcarTerminosAceptados(userId);
+            return ResponseEntity.ok(MessageResponse.of("Términos y condiciones aceptados exitosamente"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(MessageResponse.of("Error al aceptar términos y condiciones: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * Verifica si el usuario ya aceptó los términos y condiciones.
+     *
+     * @param userId ID del usuario a verificar.
+     * @return ResponseEntity con el estado de aceptación.
+     */
+    @GetMapping("/profile/{userId}/terminos-aceptados")
+    @Operation(summary = "Verificar términos aceptados", description = "Verifica si el usuario aceptó los términos")
+    public ResponseEntity<Map<String, Boolean>> verificarTerminosAceptados(@PathVariable Long userId) {
+        try {
+            boolean aceptados = userService.verificarTerminosAceptados(userId);
+            Map<String, Boolean> response = new HashMap<>();
+            response.put("terminosAceptados", aceptados);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

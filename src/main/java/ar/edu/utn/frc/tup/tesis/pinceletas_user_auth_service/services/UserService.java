@@ -139,4 +139,17 @@ public interface UserService {
      */
     UserEntity findById(Long id);
 
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    UserEntity marcarTerminosAceptados(Long userId);
+
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    boolean verificarTerminosAceptados(Long userId);
 }
