@@ -31,7 +31,7 @@ INSERT INTO users (
 ) VALUES (
              'tomas',
              'herrado',
-             'tomasherrado@gamil.com',
+             'tomasherrado@gmail.com',
              '3512711316',
              '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
              'ADMIN',
