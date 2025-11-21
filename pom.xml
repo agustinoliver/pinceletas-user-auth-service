@@ -106,24 +106,10 @@
 			<version>2.5.0</version>
 		</dependency>
 		<dependency>
-			<groupId>ar.edu.utn.frc.tup.tesis</groupId>
-			<artifactId>pinceletas-common-security</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 	</dependencies>
-
-	<repositories>
-		<repository>
-			<id>github</id>
-			<name>GitHub Packages</name>
-			<url>https://maven.pkg.github.com/TomasHerrado/pinceletas-common-security</url>
-		</repository>
-	</repositories>
-
 	<build>
 		<plugins>
 			<plugin>

@@ -1,9 +1,9 @@
 package ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services.Impl;
 
-import ar.edu.utn.frc.tup.tesis.pinceletas.common.security.JwtService;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.dto.auth.*;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.enums.RoleEnum;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.model.UserEntity;
+import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.security.JwtService;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services.PasswordResetService;
 import ar.edu.utn.frc.tup.tesis.pinceletas_user_auth_service.services.UserService;
 import com.google.firebase.auth.FirebaseAuth;
