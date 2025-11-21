@@ -2,15 +2,14 @@
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /build
 
-# PRIMERO copiar settings.xml
+# Copiar settings.xml con credenciales de GitHub
 COPY .m2/settings.xml /root/.m2/settings.xml
 
-# LUEGO copiar pom.xml
+# Copiar pom.xml y código fuente
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-# FINALMENTE copiar código fuente
 COPY src ./src
+
+# Compilar directamente
 RUN mvn clean package -DskipTests
 
 # Etapa 2: Runtime
