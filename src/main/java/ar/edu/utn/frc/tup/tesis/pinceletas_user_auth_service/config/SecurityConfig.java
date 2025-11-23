@@ -64,12 +64,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/locations/**").permitAll()
                         .requestMatchers("/api/admin/locations/**").permitAll()
 
-                        // 🔥 NUEVO: Permitir acceso público al endpoint de comunicación entre servicios
                         .requestMatchers(HttpMethod.GET, "/api/users/by-email").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/users/by-id/**").permitAll() // 🆕 NUEVO
+                        .requestMatchers(HttpMethod.GET, "/api/users/by-id/**").permitAll()
 
-                        // 🔥 IMPORTANTE: Endpoint de reportes público para comunicación entre microservicios
                         .requestMatchers(HttpMethod.GET, "/api/reports/users/active-inactive").permitAll()
 
                         .requestMatchers(HttpMethod.DELETE, "/api/users/profile/**").hasRole("ADMIN")

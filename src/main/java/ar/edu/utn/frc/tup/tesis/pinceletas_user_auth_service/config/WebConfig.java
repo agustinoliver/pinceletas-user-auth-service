@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer{
 
     /** Orígenes permitidos para CORS, separados por comas. */
-    @Value("${app.cors.allowed-origins:https://pinceletas-frontend.onrender.com}")
+    @Value("${app.cors.allowed-origins:https://pinceletas-frontend.onrender.com,http://localhost:3000,http://localhost:3001}")
     private String allowedOrigins;
 
     /**
